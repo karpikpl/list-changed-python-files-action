@@ -35,6 +35,8 @@ const compareCommitsWithBaseheadMock = jest
   .mockResolvedValue(commitsDefault)
 const pullGetMock = jest.fn().mockResolvedValue({
   data: {
+    number: 123,
+    titke: 'Unit Test PR',
     base: {
       sha: 'base-sha'
     },

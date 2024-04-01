@@ -23,7 +23,7 @@ uses: karpikpl/sample-action@v1
 
 ## Inputs
 
-### `pull_number`
+### `pull-number`
 
 **Required** ID of the pull request.
 

@@ -57,7 +57,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          pull_number: 2
+          pull-number: 2
 
       - name: Print Output
         id: output
