@@ -21,12 +21,20 @@ permissions:
 uses: karpikpl/list-changed-files-action@1.1.2
 ```
 
+To get a list of Python files changed in a PR:
+
+```yaml
+uses: karpikpl/list-changed-files-action@1.1.2
+with:
+  file-filter: '*.py'
+```
+
 ## Inputs
 
 ### `file-filter`
 
 **Optional** [Glob](https://github.com/fitzgen/glob-to-regexp) file filter to
-apply on the changed files in the pull request. E.g. `*.py`.
+apply on the changed files in the pull request. E.g. `*.py`. Default: no filter.
 
 ### `pull-number`
 
@@ -56,8 +64,8 @@ here. If not set, this will use `${{ github.token }}`.
 
 ### `changed_files`
 
-Space separated list of Python (\*.py) files changed (added, modified) in the
-pull request.
+Space separated list of files changed (added, modified) in the pull request that
+match provided `file-filter`.
 
 e.g. `'file1.py' 'file2.py'`
 
