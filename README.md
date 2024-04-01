@@ -1,10 +1,10 @@
-# Create a JavaScript Action
+# List files changed in a Pull Request
 
 [![GitHub Super-Linter](https://github.com/karpikpl/sample-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
 ![CI](https://github.com/karpikpl/sample-action/actions/workflows/ci.yml/badge.svg)
 
-GitHub action that lists all Python (.py) files changed (were added, modified)
-in the provided pull request.
+GitHub action that lists all files changed (were added, modified) in the
+provided pull request.
 
 ## Usage
 
@@ -18,10 +18,15 @@ permissions:
 ```
 
 ```yaml
-uses: karpikpl/sample-action@v1
+uses: karpikpl/list-changed-files-action@1.1.2
 ```
 
 ## Inputs
+
+### `file-filter`
+
+**Optional** [Glob](https://github.com/fitzgen/glob-to-regexp) file filter to
+apply on the changed files in the pull request. E.g. `*.py`.
 
 ### `pull-number`
 
@@ -53,6 +58,8 @@ here. If not set, this will use `${{ github.token }}`.
 
 Space separated list of Python (\*.py) files changed (added, modified) in the
 pull request.
+
+e.g. `'file1.py' 'file2.py'`
 
 ### `head_sha`
 

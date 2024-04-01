@@ -1,5 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
+const globToRegExp = require('glob-to-regexp')
 
 /**
  * The main function for the action.
@@ -7,6 +8,7 @@ const github = require('@actions/github')
  */
 async function run() {
   try {
+    const file_filter = core.getInput('file-filter', { required: false })
     const token = core.getInput('repo-token')
     const repo_owner = core.getInput('repo-owner')
     const repo_name = core.getInput('repo-name')
@@ -45,10 +47,14 @@ async function run() {
     core.info(
       `Compare status: ${compare.status} Found ${compare.data.files.length} changed files`
     )
-    const changedFiles = compare.data.files
+    let changedFiles = compare.data.files
       .filter(f => f.status !== 'deleted')
-      .filter(f => f.filename.endsWith('.py'))
       .map(f => f.filename)
+
+    if (file_filter) {
+      const filter = globToRegExp(file_filter)
+      changedFiles = changedFiles.filter(f => filter.test(f))
+    }
 
     core.setOutput('changed_files', changedFiles.map(f => `'${f}'`).join(' '))
     core.setOutput('result', 'Success')

@@ -6,6 +6,9 @@ author: 'Piotr Karpala'
 
 # Define your inputs here.
 inputs:
+  file-filter:
+    description: 'A space separated list of file extensions to filter.'
+    required: false
   pull-number:
     description: 'The pull request number.'
     required: false
