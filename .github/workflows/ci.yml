@@ -82,14 +82,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-              const fs = require('fs');
-              // read summary file
-              var summary = fs.readFileSync('code-coverage-results.md', 'utf8');
+            const fs = require('fs');
+            // read summary file
+            var summary = fs.readFileSync('code-coverage-results.md', 'utf8');
 
-              await core.summary
-              .addHeading('JS Code Coverage Summary')
-              .addRaw(summary)
-              .write()
+            await core.summary
+            .addHeading('JS Code Coverage Summary')
+            .addRaw(summary)
+            .write()
 
   test-action:
     name: GitHub Actions Test
