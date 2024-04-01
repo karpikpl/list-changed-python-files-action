@@ -36,15 +36,15 @@ with:
 ### `repo-owner`
 
 **Optional** Another repository owner, If not set, the current repository owner
-is used by default. Note that when you trying changing a repository, be aware that
-`GITHUB_TOKEN` should also have permission for that repository.
+is used by default. Note that when you trying changing a repository, be aware
+that `GITHUB_TOKEN` should also have permission for that repository.
 
 ### `repo-name`
 
 **Optional** Another repository name. Of limited use on GitHub enterprise. If
 not set, the current repository is used by default. Note that when you trying
-changing a repository, be aware that `GITHUB_TOKEN` should also have permission for
-that repository.
+changing a repository, be aware that `GITHUB_TOKEN` should also have permission
+for that repository.
 
 ### `repo-token`
 
