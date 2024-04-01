@@ -8,10 +8,8 @@ const main = require('../src/main')
 // Mock the GitHub Actions core library
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation(name => {
   switch (name) {
-    case 'base_sha':
-      return 'efc3099'
-    case 'head_sha':
-      return '0f4d3d7'
+    case 'pull-number':
+      return 123
     case 'repo-token':
       return '1234567890abcdef'
     case 'repo-owner':
@@ -35,6 +33,16 @@ const commitsDefault = {
 const compareCommitsWithBaseheadMock = jest
   .fn()
   .mockResolvedValue(commitsDefault)
+const pullGetMock = jest.fn().mockResolvedValue({
+  data: {
+    base: {
+      sha: 'base-sha'
+    },
+    head: {
+      sha: 'head-sha'
+    }
+  }
+})
 
 // Mock the GitHub context
 process.env['GITHUB_REPOSITORY'] = 'owner/repo'
@@ -48,6 +56,9 @@ const getOctokitMock = jest
       rest: {
         repos: {
           compareCommitsWithBasehead: compareCommitsWithBaseheadMock
+        },
+        pulls: {
+          get: pullGetMock
         }
       }
     }
@@ -66,7 +77,13 @@ describe('action', () => {
 
     // Verify that all of the core library functions were called correctly
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'changed_files', '')
+    expect(setOutputMock).toHaveBeenNthCalledWith(2, 'result', 'Success')
     expect(getOctokitMock).toHaveBeenCalled()
+    expect(pullGetMock).toHaveBeenNthCalledWith(1, {
+      owner: 'repoBoss',
+      repo: 'myRepo',
+      pull_number: 123
+    })
   })
 
   it('sets the output to string with added/modified python files', async () => {
@@ -94,14 +111,15 @@ describe('action', () => {
       'changed_files',
       "'file1.py' 'file2.py'"
     )
+    expect(setOutputMock).toHaveBeenNthCalledWith(2, 'result', 'Success')
   })
 
   it('fails if no input is provided', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation(name => {
       switch (name) {
-        case 'head_sha':
-          throw new Error('Input required and not supplied: head_sha')
+        case 'pull-number':
+          throw new Error('Input required and not supplied: pull-number')
         default:
           return 'something'
       }
@@ -113,7 +131,37 @@ describe('action', () => {
     // Verify that all of the core library functions were called correctly
     expect(setFailedMock).toHaveBeenNthCalledWith(
       1,
-      'Input required and not supplied: head_sha'
+      'Input required and not supplied: pull-number'
+    )
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'result', 'Failed')
+  })
+
+  it('does nothing when pull request number not provided', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation(name => {
+      switch (name) {
+        case 'pull-number':
+          return ''
+        case 'repo-token':
+          return '1234567890abcdef'
+        case 'repo-owner':
+          return 'repoBoss'
+        case 'repo-name':
+          return 'myRepo'
+        default:
+          throw new Error(`Unknown input: ${name}`)
+      }
+    })
+
+    await main.run()
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'changed_files', '')
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      2,
+      'result',
+      'No pull request number provided.'
     )
   })
 })

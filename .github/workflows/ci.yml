@@ -57,9 +57,15 @@ jobs:
         id: test-action
         uses: ./
         with:
-          base_sha: efc309992637771023dea36dfe811ca2cb0623b1
-          head_sha: 021ee60b6d79e3344ace3816ebcb2de6560ba265
+          pull_number: 2
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.changed_files }}"
+        run: |
+          echo "Changed files: ${{ steps.test-action.outputs.changed_files }}"
+          echo "Result: ${{ steps.test-action.outputs.result }}"
+
+          # throw an error if the result is not success
+          if [ "${{ steps.test-action.outputs.result }}" != "success" ]; then
+            exit 1
+          fi
