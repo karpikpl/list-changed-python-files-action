@@ -14,6 +14,10 @@ const getInputMock = jest.spyOn(core, 'getInput').mockImplementation(name => {
       return '0f4d3d7'
     case 'repo-token':
       return '1234567890abcdef'
+    case 'repo-owner':
+      return 'repoBoss'
+    case 'repo-name':
+      return 'myRepo'
     default:
       throw new Error(`Unknown input: ${name}`)
   }
@@ -62,6 +66,7 @@ describe('action', () => {
 
     // Verify that all of the core library functions were called correctly
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'changed_files', '')
+    expect(getOctokitMock).toHaveBeenCalled()
   })
 
   it('sets the output to string with added/modified python files', async () => {
@@ -83,6 +88,7 @@ describe('action', () => {
     expect(runMock).toHaveReturned()
 
     // Verify that all of the core library functions were called correctly
+    expect(getOctokitMock).toHaveBeenCalled()
     expect(setOutputMock).toHaveBeenNthCalledWith(
       1,
       'changed_files',
@@ -97,7 +103,7 @@ describe('action', () => {
         case 'head_sha':
           throw new Error('Input required and not supplied: head_sha')
         default:
-          return ''
+          return 'something'
       }
     })
 
@@ -107,7 +113,7 @@ describe('action', () => {
     // Verify that all of the core library functions were called correctly
     expect(setFailedMock).toHaveBeenNthCalledWith(
       1,
-      'Input required and not supplied: milliseconds'
+      'Input required and not supplied: head_sha'
     )
   })
 })
