@@ -10,7 +10,7 @@ inputs:
     description: 'Base sha commit id'
     required: true
   head_sha:
-    description: 'Base sha commit id'
+    description: 'Head sha commit id'
     required: true
   repo-owner:
     description: 'The repo owner.'
