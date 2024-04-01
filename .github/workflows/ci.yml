@@ -10,6 +10,10 @@ on:
 
 permissions:
   contents: read
+  statuses: write
+  issues: read
+  checks: write
+  pull-requests: write
 
 jobs:
   test-javascript:
@@ -44,6 +48,49 @@ jobs:
         id: npm-ci-test
         run: npm run ci-test
 
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: Test Results JS
+          files: |
+            .reports/**/*.xml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: js-results
+          path: |
+            reports/*
+            coverage/*
+
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: ./coverage/*.xml
+          badge: true
+          format: markdown
+          output: both
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
+
+      - name: Add Coverage Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            // read summary file
+            var summary = fs.readFileSync('code-coverage-results.md', 'utf8');
+
+            await core.summary
+            .addHeading('JS Code Coverage Summary')
+            .addRaw(summary)
+            .write()
+
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
@@ -57,9 +104,15 @@ jobs:
         id: test-action
         uses: ./
         with:
-          base_sha: efc309992637771023dea36dfe811ca2cb0623b1
-          head_sha: 021ee60b6d79e3344ace3816ebcb2de6560ba265
+          pull-number: 2
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.changed_files }}"
+        run: |
+          echo "Changed files: ${{ steps.test-action.outputs.changed_files }}"
+          echo "Result: ${{ steps.test-action.outputs.result }}"
+
+          # throw an error if the result is not success
+          if [ "${{ steps.test-action.outputs.result }}" != "Success" ]; then
+            exit 1
+          fi

@@ -4,7 +4,7 @@
 ![CI](https://github.com/karpikpl/sample-action/actions/workflows/ci.yml/badge.svg)
 
 GitHub action that lists all Python (.py) files changed (were added, modified)
-between two provided commits.
+in the provided pull request.
 
 ## Usage
 
@@ -19,20 +19,13 @@ permissions:
 
 ```yaml
 uses: karpikpl/sample-action@v1
-with:
-  base_sha: efc309992637771023dea36dfe811ca2cb0623b1
-  head_sha: 021ee60b6d79e3344ace3816ebcb2de6560ba265
 ```
 
 ## Inputs
 
-### `base_sha`
+### `pull-number`
 
-**Required** Base sha commit ID.
-
-### `head_sha`
-
-**Required** Head sha commit ID.
+**Required** ID of the pull request.
 
 ### `repo-owner`
 
@@ -57,5 +50,5 @@ here. If not set, this will use `${{ github.token }}`.
 
 ### `changed_files`
 
-Space separated list of Python (\*.py) files changed (added, modified) between
-base and head sha commit IDs.
+Space separated list of Python (\*.py) files changed (added, modified) in the
+pull request.

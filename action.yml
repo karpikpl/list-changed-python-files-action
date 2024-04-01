@@ -1,17 +1,14 @@
 name: 'List files changed in a Pull Request'
 description:
-  'For a given base and head sha commit ids, list all the files changed between
-  them.'
+  'For a given pull request number, list all the Python (.py) files added and
+  modified.'
 author: 'Piotr Karpala'
 
 # Define your inputs here.
 inputs:
-  base_sha:
-    description: 'Base sha commit id'
-    required: true
-  head_sha:
-    description: 'Head sha commit id'
-    required: true
+  pull-number:
+    description: 'The pull request number.'
+    required: false
   repo-owner:
     description: 'The repo owner.'
     default: '${{ github.repository_owner }}'
@@ -29,9 +26,10 @@ inputs:
 # Define your outputs here.
 outputs:
   changed_files:
+    description: 'space separated list of files changed in the pull request'
+  result:
     description:
-      'space separated list of files changed between base and head sha commit
-      ids'
+      'The result of the action. Success, Failure or information message.'
 
 runs:
   using: node20
