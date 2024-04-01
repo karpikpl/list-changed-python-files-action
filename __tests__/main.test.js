@@ -23,17 +23,13 @@ const getInputMock = jest.spyOn(core, 'getInput').mockImplementation(name => {
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
 const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
 
-const commitsDefault = {
+const commitsData = {
   status: 200,
   url: 'https://api.github.com/repos/octocat/Hello-World/compare/master...topic',
   headers: {},
   data: require('./sampleResponse.json')
 }
-
-const compareCommitsWithBaseheadMock = jest
-  .fn()
-  .mockResolvedValue(commitsDefault)
-const pullGetMock = jest.fn().mockResolvedValue({
+const prGetData = {
   data: {
     number: 123,
     titke: 'Unit Test PR',
@@ -44,7 +40,10 @@ const pullGetMock = jest.fn().mockResolvedValue({
       sha: 'head-sha'
     }
   }
-})
+}
+
+const compareCommitsWithBaseheadMock = jest.fn().mockResolvedValue(commitsData)
+const pullGetMock = jest.fn().mockResolvedValue(prGetData)
 
 // Mock the GitHub context
 process.env['GITHUB_REPOSITORY'] = 'owner/repo'
@@ -72,7 +71,8 @@ describe('action', () => {
   })
 
   it('sets the output to empty string when no python files', async () => {
-    compareCommitsWithBaseheadMock.mockResolvedValue(commitsDefault)
+    compareCommitsWithBaseheadMock.mockResolvedValue(commitsData)
+    pullGetMock.mockResolvedValue(prGetData)
 
     await main.run()
     expect(runMock).toHaveReturned()
@@ -102,6 +102,7 @@ describe('action', () => {
         ]
       }
     })
+    pullGetMock.mockResolvedValue(prGetData)
 
     await main.run()
     expect(runMock).toHaveReturned()
@@ -120,8 +121,8 @@ describe('action', () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation(name => {
       switch (name) {
-        case 'pull-number':
-          throw new Error('Input required and not supplied: pull-number')
+        case 'repo-token':
+          throw new Error('Input required and not supplied: repo-token')
         default:
           return 'something'
       }
@@ -133,7 +134,7 @@ describe('action', () => {
     // Verify that all of the core library functions were called correctly
     expect(setFailedMock).toHaveBeenNthCalledWith(
       1,
-      'Input required and not supplied: pull-number'
+      'Input required and not supplied: repo-token'
     )
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'result', 'Failed')
   })
@@ -159,6 +160,10 @@ describe('action', () => {
     expect(runMock).toHaveReturned()
 
     // Verify that all of the core library functions were called correctly
+    expect(getOctokitMock).not.toHaveBeenCalled()
+    expect(compareCommitsWithBaseheadMock).not.toHaveBeenCalled()
+    expect(pullGetMock).not.toHaveBeenCalled()
+
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'changed_files', '')
     expect(setOutputMock).toHaveBeenNthCalledWith(
       2,
