@@ -13,7 +13,8 @@ between two provided commits.
 You need to add permissions for this tool.
 
 ```yaml
-permissions: TBD
+permissions:
+  contents: read
 ```
 
 ```yaml
