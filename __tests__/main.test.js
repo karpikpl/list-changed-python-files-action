@@ -42,11 +42,16 @@ const prGetData = {
   }
 }
 
+const contextData = {
+  payload: {
+    pull_request: {
+      number: 123
+    }
+  }
+}
+
 const compareCommitsWithBaseheadMock = jest.fn().mockResolvedValue(commitsData)
 const pullGetMock = jest.fn().mockResolvedValue(prGetData)
-
-// Mock the GitHub context
-process.env['GITHUB_REPOSITORY'] = 'owner/repo'
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
@@ -73,6 +78,7 @@ describe('action', () => {
   it('sets the output to empty string when no python files', async () => {
     compareCommitsWithBaseheadMock.mockResolvedValue(commitsData)
     pullGetMock.mockResolvedValue(prGetData)
+    github.context.payload = contextData
 
     await main.run()
     expect(runMock).toHaveReturned()
@@ -103,6 +109,7 @@ describe('action', () => {
       }
     })
     pullGetMock.mockResolvedValue(prGetData)
+    github.context.payload = contextData
 
     await main.run()
     expect(runMock).toHaveReturned()
@@ -155,6 +162,7 @@ describe('action', () => {
           throw new Error(`Unknown input: ${name}`)
       }
     })
+    github.context.payload = {}
 
     await main.run()
     expect(runMock).toHaveReturned()
