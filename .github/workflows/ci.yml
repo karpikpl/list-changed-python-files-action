@@ -65,7 +65,7 @@ jobs:
           filename: ./coverage/*.xml
           badge: true
           format: markdown
-          output: both        
+          output: both
 
   test-action:
     name: GitHub Actions Test
