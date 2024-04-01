@@ -84,8 +84,18 @@ describe('action', () => {
     expect(runMock).toHaveReturned()
 
     // Verify that all of the core library functions were called correctly
-    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'changed_files', '')
-    expect(setOutputMock).toHaveBeenNthCalledWith(2, 'result', 'Success')
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'head_sha',
+      prGetData.data.head.sha
+    )
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      2,
+      'base_sha',
+      prGetData.data.base.sha
+    )
+    expect(setOutputMock).toHaveBeenNthCalledWith(3, 'changed_files', '')
+    expect(setOutputMock).toHaveBeenNthCalledWith(4, 'result', 'Success')
     expect(getOctokitMock).toHaveBeenCalled()
     expect(pullGetMock).toHaveBeenNthCalledWith(1, {
       owner: 'repoBoss',
@@ -118,10 +128,20 @@ describe('action', () => {
     expect(getOctokitMock).toHaveBeenCalled()
     expect(setOutputMock).toHaveBeenNthCalledWith(
       1,
+      'head_sha',
+      prGetData.data.head.sha
+    )
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      2,
+      'base_sha',
+      prGetData.data.base.sha
+    )
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      3,
       'changed_files',
       "'file1.py' 'file2.py'"
     )
-    expect(setOutputMock).toHaveBeenNthCalledWith(2, 'result', 'Success')
+    expect(setOutputMock).toHaveBeenNthCalledWith(4, 'result', 'Success')
   })
 
   it('fails if no input is provided', async () => {

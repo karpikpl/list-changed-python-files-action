@@ -16,7 +16,7 @@ async function run() {
       +core.getInput('pull-number', { required: false })
 
     if (!pull_number) {
-      core.debug('No pull request number provided.')
+      core.info('No pull request number provided.')
       core.setOutput('changed_files', '')
       core.setOutput('result', 'No pull request number provided.')
       return
@@ -30,7 +30,9 @@ async function run() {
       pull_number
     })
 
-    core.debug(`Processing PR ${pull_number}: ${pr.data.title}`)
+    core.setOutput('head_sha', pr.data.head.sha)
+    core.setOutput('base_sha', pr.data.base.sha)
+    core.info(`Processing PR ${pull_number}: ${pr.data.title}`)
 
     // https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits
     const compare = await octokit.rest.repos.compareCommitsWithBasehead({
@@ -40,6 +42,9 @@ async function run() {
     })
     // see: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-comparing-branches-in-pull-requests#about-three-dot-comparison-on-github
 
+    core.info(
+      `Compare status: ${compare.status} Found ${compare.data.files.length} changed files`
+    )
     const changedFiles = compare.data.files
       .filter(f => f.status !== 'deleted')
       .filter(f => f.filename.endsWith('.py'))

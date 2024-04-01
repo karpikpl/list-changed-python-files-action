@@ -111,6 +111,8 @@ jobs:
         run: |
           echo "Changed files: ${{ steps.test-action.outputs.changed_files }}"
           echo "Result: ${{ steps.test-action.outputs.result }}"
+          echo "Head SHA: ${{ steps.test-action.outputs.head_sha }}"
+          echo "Base SHA: ${{ steps.test-action.outputs.base_sha }}"
 
           # throw an error if the result is not success
           if [ "${{ steps.test-action.outputs.result }}" != "Success" ]; then

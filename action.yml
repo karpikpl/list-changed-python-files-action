@@ -27,6 +27,10 @@ inputs:
 outputs:
   changed_files:
     description: 'space separated list of files changed in the pull request'
+  head_sha:
+    description: 'The head sha of the pull request'
+  base_sha:
+    description: 'The base sha of the pull request'
   result:
     description:
       'The result of the action. Success, Failure or information message.'
