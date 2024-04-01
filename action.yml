@@ -7,7 +7,7 @@ author: 'Piotr Karpala'
 # Define your inputs here.
 inputs:
   pull-number:
-    description: '${{ github.event?.number }}'
+    description: 'The pull request number.'
     required: false
   repo-owner:
     description: 'The repo owner.'
