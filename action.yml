@@ -35,6 +35,10 @@ outputs:
     description:
       'The result of the action. Success, Failure or information message.'
 
+branding:
+  icon: 'git-pull-request'
+  color: 'purple'
+
 runs:
   using: node20
   main: dist/index.js
