@@ -25,7 +25,8 @@ uses: karpikpl/sample-action@v1
 
 ### `pull-number`
 
-**Required** ID of the pull request.
+**Optional** ID of the pull request. Action will try to use pull request number
+from GitHub event.
 
 ### `repo-owner`
 
@@ -52,3 +53,16 @@ here. If not set, this will use `${{ github.token }}`.
 
 Space separated list of Python (\*.py) files changed (added, modified) in the
 pull request.
+
+### `head_sha`
+
+Head sha commit ID from the pull request.
+
+### `base_sha`
+
+Base sha commit ID from the pull request.
+
+### `result`
+
+The result of the action. Success, Failure or information message. Useful for
+debugging.
