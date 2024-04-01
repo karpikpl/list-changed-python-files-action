@@ -57,7 +57,8 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 1000
+          base_sha: efc309992637771023dea36dfe811ca2cb0623b1
+          head_sha: 021ee60b6d79e3344ace3816ebcb2de6560ba265
 
       - name: Print Output
         id: output
