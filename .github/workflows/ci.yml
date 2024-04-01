@@ -66,6 +66,6 @@ jobs:
           echo "Result: ${{ steps.test-action.outputs.result }}"
 
           # throw an error if the result is not success
-          if [ "${{ steps.test-action.outputs.result }}" != "success" ]; then
+          if [ "${{ steps.test-action.outputs.result }}" != "Success" ]; then
             exit 1
           fi
