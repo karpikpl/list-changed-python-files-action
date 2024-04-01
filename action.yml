@@ -1,18 +1,32 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'List files changed in a Pull Request'
+description: 'For a given base and head sha commit ids, list all the files changed between them.'
+author: 'Piotr Karpala'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  base_sha:
+    description: 'Base sha commit id'
     required: true
-    default: '1000'
-
+  head_sha:
+    description: 'Base sha commit id'
+    required: true
+  repo-owner:
+    description: "The repo owner."
+    default: "${{ github.repository_owner }}"
+    required: true
+  repo-name:
+    description: "The repo name."
+    default: "${{ github.event.repository.name }}"
+    required: true
+  repo-token:
+    description: "A GitHub token for API access. Defaults to {{ github.token }}."
+    default: "${{ github.token }}"
+    required: true
+    
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  changed_files:
+    description: 'space separated list of files changed between base and head sha commit ids'
 
 runs:
   using: node20

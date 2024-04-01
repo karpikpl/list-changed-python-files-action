@@ -1,28 +1,30 @@
 const core = require('@actions/core')
-const { wait } = require('./wait')
+const github = require('@actions/github')
 
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
-  try {
-    const ms = core.getInput('milliseconds', { required: true })
+  const base_sha = core.getInput('base_sha')
+  const head_sha = core.getInput('head_sha')
+  const token = core.getInput('repo-token')
+  const octokit = github.getOctokit(token)
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+  // https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits
+  const compare = await octokit.rest.repos.compareCommitsWithBasehead({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    basehead: `${base_sha}...${head_sha}`
+  })
+  // see: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-comparing-branches-in-pull-requests#about-three-dot-comparison-on-github
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  const changedFiles = compare.data.files
+    .filter(f => f.status !== 'deleted')
+    .filter(f => f.filename.endsWith('.py'))
+    .map(f => f.filename)
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    // Fail the workflow run if an error occurs
-    core.setFailed(error.message)
-  }
+  core.setOutput('changed_files', changedFiles.map(f => `'${f}'`).join(' '))
 }
 
 module.exports = {
