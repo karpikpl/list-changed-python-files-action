@@ -27,23 +27,23 @@ with:
 
 ### `base_sha`
 
-**Required** Base sha commit id.
+**Required** Base sha commit ID.
 
 ### `head_sha`
 
-**Required** Head sha commit id.
+**Required** Head sha commit ID.
 
 ### `repo-owner`
 
 **Optional** Another repository owner, If not set, the current repository owner
-is used by default. Note that when you trying changing a repo, be aware that
+is used by default. Note that when you trying changing a repository, be aware that
 `GITHUB_TOKEN` should also have permission for that repository.
 
 ### `repo-name`
 
 **Optional** Another repository name. Of limited use on GitHub enterprise. If
 not set, the current repository is used by default. Note that when you trying
-changing a repo, be aware that `GITHUB_TOKEN` should also have permission for
+changing a repository, be aware that `GITHUB_TOKEN` should also have permission for
 that repository.
 
 ### `repo-token`
@@ -57,4 +57,4 @@ here. If not set, this will use `${{ github.token }}`.
 ### `changed_files`
 
 Space separated list of Python (\*.py) files changed (added, modified) between
-base and head sha commit ids.
+base and head sha commit IDs.
